@@ -21,8 +21,8 @@ const securepassword = async(password)=>{
 const sendResetPasswordMail = async(name,email,token)=>{
     const auth ={
         auth: {
-            api_key: 'cff7b865d1cd38139458dbf1fe98f169-cc9b2d04-03fc84dc',
-            domain: 'sandbox3f5c2cf0417c41f186751fdf4cd1cbd4.mailgun.org',
+            api_key: '',
+            domain: '',
         },
     }
     try {
