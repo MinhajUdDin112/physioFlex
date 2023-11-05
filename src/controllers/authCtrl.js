@@ -109,34 +109,34 @@ const registerUser = async (req,res)=>{
 
     try {
         const user = await userModel.findOne({ email: email });
-    
+        console.log(user)
         if (user) {
           const validity = await bcrypt.compare(password, user.password);
-    
           if (!validity) {
             res.status(400).json("wrong password");
           } else {
-            const token = jwt.sign(
-              { name: user.name, id: user._id },
-              process.env.JWTKEY,
-              { expiresIn: "1h" }
-            ); 
-
-            const refreshToken = jwt.sign({
-                name: user.name, id: user._id
-            }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
-      
-            // Assigning refresh token in http-only cookie 
-            res.cookie('jwt', refreshToken, { httpOnly: true, 
-                sameSite: 'None', secure: true, 
-                maxAge: 24 * 60 * 60 * 1000 });
-            res.status(200).json({ user, token, refreshToken });
+            const uuid = uuidv4();
+            console.log("uuid", uuid);
+            const refreshToken = jwtServices.create({ uuid, type: "admin" });
+            const accessToken = jwtServices.create(
+                { userId: user._id, type: "admin" },
+                "5m"
+            );
+            authIdServices.add(user._id, uuid);
+            await userModel.findOneAndUpdate(
+                { _id: user._id },
+                { token: accessToken },
+                { new: true }
+            );
+            (user.token = accessToken), (user.refreshToken = refreshToken);
+            res.status(200).send({msg:"logged in", data:user})
           }
         } else {
           res.status(404).json("User not found");
         }
       } catch (err) {
-        res.status(500).json(err);
+        console.log(err)
+        res.status(500).send(err);
       }
 }
 
