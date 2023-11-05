@@ -2,7 +2,7 @@ const express = require('express');
 const colors = require('colors');
 var morgan = require("morgan");
 var cors = require("cors");
-const connectDB = require('./config/db'); 
+const connectDB = require('./src/config/db'); 
 const cookieparser = require('cookie-parser');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -21,10 +21,10 @@ app.use(express.json());
 app.use(cookieparser());
 app.use(morgan("dev"));
 //routes
-app.use("/api/auth", require('./routes/AuthRoutes'));
-app.use("/api", require('./routes/categoryRoute'))
-app.use("/api", require('./routes/subCategoryRoutes'))
-app.use("/api", require('./routes/productRoutes'))
+app.use("/api/auth", require('./src/routes/AuthRoutes'));
+app.use("/api", require('./src/routes/categoryRoute'))
+app.use("/api", require('./src/routes/subCategoryRoutes'))
+app.use("/api", require('./src/routes/productRoutes'))
 
 
 //listen port
